@@ -126,20 +126,24 @@
 .promptContainer {
   background: #ffffff;
   border-radius: 20px;
-  padding: 0.75rem 1rem 0.75rem 1.5rem;
+  padding: 1.5rem; /* <-- Made padding more uniform */
   width: 100%;
   max-width: 720px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
   border: 1px solid #e2e8f0;
   display: flex;
   flex-direction: column;
+  gap: 1rem; /* <-- Adds space between the input area and the controls */
 }
 
 .promptInputArea {
   min-height: 40px;
   display: flex;
+  flex-direction: column; /* <-- Stacks the inputs vertically */
+  gap: 12px; /* <-- Adds a nice space between the two inputs */
   align-items: center;
   width: 100%;
+  margin-bottom: 1rem; /* <-- Adds some space before the submit button */
 }
 
 .promptControls {
