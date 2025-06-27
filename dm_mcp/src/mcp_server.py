@@ -6,7 +6,7 @@ import os
 from dotenv import load_dotenv
 import logging
 from pathlib import Path
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, session
 from flask_cors import CORS
 
 # Initialize the Flask web server
@@ -663,31 +663,29 @@ def get_user_posts(username: str, count: int = 12) -> Dict[str, Any]:
         return {"success": False, "message": str(e)}
 
 if __name__ == "__main__":
-   parser = argparse.ArgumentParser()
-   parser.add_argument("--username", type=str, help="Instagram username (can also be set via INSTAGRAM_USERNAME env var)")
-   parser.add_argument("--password", type=str, help="Instagram password (can also be set via INSTAGRAM_PASSWORD env var)")
-   args = parser.parse_args()
-
-   # Get credentials from environment variables or command line arguments
-   username = args.username or os.getenv("INSTAGRAM_USERNAME")
-   password = args.password or os.getenv("INSTAGRAM_PASSWORD")
+   # --- 1. Get Credentials ---
+   # Credentials will be loaded from the .env file
+   username = os.getenv("INSTAGRAM_USERNAME")
+   password = os.getenv("INSTAGRAM_PASSWORD")
 
    if not username or not password:
-       logger.error("Instagram credentials not provided.")
-       print("Error: Instagram credentials not provided.")
+       logger.error("Instagram credentials not provided in .env file.")
+       print("FATAL ERROR: Instagram credentials not provided.")
+       print("Please create a .env file with INSTAGRAM_USERNAME and INSTAGRAM_PASSWORD.")
        exit(1)
 
+   # --- 2. Login to Instagram ---
+   # The server logs itself in once when it starts.
    try:
-       logger.info("Attempting to login to Instagram...")
+       logger.info(f"Attempting to login to Instagram as {username}...")
        client.login(username, password)
-       logger.info("Successfully logged in to Instagram")
-       
-       # START THE WEB SERVER INSTEAD OF THE COMMAND-LINE TOOL
-       print("\n\n<<<<<<<<<< SCRIPT IS WORKING, ATTEMPTING TO START WEB SERVER NOW >>>>>>>>>>\n\n")
-       print("--- Starting Flask web server on http://localhost:5000 ---")
-       app.run(host='0.0.0.0', port=5000, debug=True)
-
+       logger.info("Successfully logged in to Instagram!")
    except Exception as e:
        logger.error(f"Failed to login to Instagram: {str(e)}")
-       print(f"Error: Failed to login to Instagram - {str(e)}")
+       print(f"FATAL ERROR: Failed to login to Instagram - {str(e)}")
        exit(1)
+
+   # --- 3. Start the Web Server ---
+   # If login was successful, start the Flask app.
+   print("\n--- Starting Flask web server on http://localhost:5000 ---")
+   app.run(host='0.0.0.0', port=5000, debug=True)
