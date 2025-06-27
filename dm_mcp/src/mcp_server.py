@@ -6,6 +6,45 @@ import os
 from dotenv import load_dotenv
 import logging
 from pathlib import Path
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+
+# Initialize the Flask web server
+app = Flask(__name__)
+
+# Enable CORS (Cross-Origin Resource Sharing) to allow your React app
+# (running on localhost:5173) to communicate with this server (running on localhost:5000)
+CORS(app)
+
+@app.route('/send-dm', methods=['POST', 'OPTIONS'])
+def handle_send_dm():
+    if request.method == 'OPTIONS':
+        return jsonify({'status': 'ok'}), 200
+
+    print("\n--- INCOMING /send-dm REQUEST RECEIVED ---")
+    data = request.get_json()
+
+    if not data or 'username' not in data or 'message' not in data:
+        print("--- REQUEST FAILED: Missing username or message ---")
+        return jsonify({"error": "Missing 'username' or 'message' in request body"}), 400
+
+    username = data['username']
+    message_content = data['message']
+    print(f"Attempting to send DM to '{username}': '{message_content}'")
+
+    try:
+        # Call the actual MCP tool function
+        result = send_message(username=username, message=message_content)
+        print(f"Result from send_message tool: {result}")
+        
+        if result.get("success"):
+            return jsonify({"status": "DM sent successfully!", "details": result})
+        else:
+            return jsonify({"status": "Failed to send DM.", "error": result.get("message", "Unknown error")}), 500
+            
+    except Exception as e:
+        print(f"An unexpected server error occurred: {e}")
+        return jsonify({"status": "An server error occurred", "error": str(e)}), 500
 
 # Load environment variables from .env file
 load_dotenv()
@@ -623,7 +662,6 @@ def get_user_posts(username: str, count: int = 12) -> Dict[str, Any]:
     except Exception as e:
         return {"success": False, "message": str(e)}
 
-
 if __name__ == "__main__":
    parser = argparse.ArgumentParser()
    parser.add_argument("--username", type=str, help="Instagram username (can also be set via INSTAGRAM_USERNAME env var)")
@@ -635,18 +673,20 @@ if __name__ == "__main__":
    password = args.password or os.getenv("INSTAGRAM_PASSWORD")
 
    if not username or not password:
-       logger.error("Instagram credentials not provided. Please set INSTAGRAM_USERNAME and INSTAGRAM_PASSWORD environment variables in a .env file, or provide --username and --password arguments.")
+       logger.error("Instagram credentials not provided.")
        print("Error: Instagram credentials not provided.")
-       print("Please either:")
-       print("1. Create a .env file with INSTAGRAM_USERNAME and INSTAGRAM_PASSWORD")
-       print("2. Use --username and --password command line arguments")
        exit(1)
 
    try:
        logger.info("Attempting to login to Instagram...")
        client.login(username, password)
        logger.info("Successfully logged in to Instagram")
-       mcp.run(transport="stdio")
+       
+       # START THE WEB SERVER INSTEAD OF THE COMMAND-LINE TOOL
+       print("\n\n<<<<<<<<<< SCRIPT IS WORKING, ATTEMPTING TO START WEB SERVER NOW >>>>>>>>>>\n\n")
+       print("--- Starting Flask web server on http://localhost:5000 ---")
+       app.run(host='0.0.0.0', port=5000, debug=True)
+
    except Exception as e:
        logger.error(f"Failed to login to Instagram: {str(e)}")
        print(f"Error: Failed to login to Instagram - {str(e)}")

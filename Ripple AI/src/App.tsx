@@ -1,16 +1,68 @@
-import React from 'react';
-import './App.css';
+// src/App.tsx
 
-// We're using the popular 'react-icons' library for the icons.
-// You can install it with: npm install react-icons
+import React, { useState, FormEvent } from 'react';
+import './App.css'; 
+
 import { FaHeart, FaGlobe } from 'react-icons/fa';
 import { BsPlus, BsArrowUp } from 'react-icons/bs';
-import { FiLink, FiMessageSquare, FiDatabase, FiHome } from 'react-icons/fi';
+
+// The URL of our Python Flask server
+const API_URL = 'http://localhost:5000/send-dm';
+
+function App() {
+  // State for the input field
+  const [message, setMessage] = useState('');
+  // State to track loading status
+  const [isLoading, setIsLoading] = useState(false);
+  // State to show success/error messages from the server
+  const [status, setStatus] = useState('');
+
+  // Function to handle form submission
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault(); // Prevent the page from reloading on submit
+    if (!message || isLoading) return; // Don't send empty messages or if already loading
+
+    setIsLoading(true);
+    setStatus('Sending...');
+
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          username: "bilal96.1", // <-- ⚠️ REPLACE WITH A REAL USERNAME!
+          message: message 
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // If the server returned an error (e.g., 500), throw an error
+        throw new Error(data.status || 'An error occurred.');
+      }
+      
+      // On success
+      setStatus(data.status);
+      setMessage(''); // Clear the input field
+
+    } catch (error) {
+      if (error instanceof Error) {
+        setStatus(`Error: ${error.message}`);
+      } else {
+        setStatus('An unknown error occurred.');
+      }
+    } finally {
+      // This will run whether the request succeeded or failed
+      setIsLoading(false);
+    }
+  };
 
 
-const LovablePage = () => {
   return (
-    <div className="lovablePage">
+    <>
       <header className="header">
         <div className="logo">
           <span className="logoIcon"><FaHeart /></span>
@@ -33,44 +85,43 @@ const LovablePage = () => {
           Build something <span className="heartIcon"><FaHeart /></span> <strong>Lovable</strong>
         </h1>
         <p className="subheadline">
-          Create apps and websites by chatting with AI
+          Send an Instagram DM by chatting with the MCP server
         </p>
 
-        <div className="promptContainer">
+        {/* We use a form for better accessibility and event handling */}
+        <form className="promptContainer" onSubmit={handleSubmit}>
+          {/* THIS IS THE CRITICAL PART */}
           <div className="promptInputArea">
-            <p>Ask Lovable to create an internal tool that.</p>
+            {/* MAKE SURE ONLY THE INPUT IS HERE */}
+            <input
+              type="text"
+              className="chatInput"
+              placeholder="Type your Instagram message here..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              disabled={isLoading}
+            />
           </div>
+
           <div className="promptControls">
             <div className="promptActions">
-              <button className="promptButton plusButton"><BsPlus size={24} /></button>
-              <button className="promptButton publicButton">
+              <button type="button" className="promptButton plusButton" disabled={isLoading}><BsPlus size={24} /></button>
+              <button type="button" className="promptButton publicButton" disabled={isLoading}>
                 <FaGlobe />
                 <span>Public</span>
               </button>
             </div>
-            <button className="submitButton">
-              <BsArrowUp size={24} />
+            <button type="submit" className="submitButton" disabled={isLoading}>
+              {isLoading ? '...' : <BsArrowUp size={24} />}
             </button>
           </div>
-        </div>
+        </form>
 
-        <div className="suggestions">
-          <button className="suggestionButton">
-            <FiLink /> E-commerce store
-          </button>
-          <button className="suggestionButton">
-            <FiMessageSquare /> Social media feed
-          </button>
-          <button className="suggestionButton">
-            <FiDatabase /> Hacker News top 100
-          </button>
-          <button className="suggestionButton">
-            <FiHome /> Real estate listings
-          </button>
-        </div>
+        {/* Display the status message from the server */}
+        {status && <p className="statusMessage">{status}</p>}
       </main>
-    </div>
+    </>
   );
-};
+}
 
-export default LovablePage;
+export default App;
