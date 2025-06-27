@@ -1,10 +1,6 @@
-// src/App.tsx
-
-import React, { useState, FormEvent } from 'react';
-import './App.css'; 
-
-import { FaHeart, FaGlobe } from 'react-icons/fa';
-import { BsPlus, BsArrowUp } from 'react-icons/bs';
+import { useState, type FormEvent } from 'react'; 
+import { FaHeart } from 'react-icons/fa';
+import { BsArrowUp } from 'react-icons/bs';
 
 // The URL of our Python Flask server
 const API_URL = 'http://localhost:5000/send-dm';
