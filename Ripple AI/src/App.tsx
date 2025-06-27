@@ -10,6 +10,7 @@ import { BsPlus, BsArrowUp } from 'react-icons/bs';
 const API_URL = 'http://localhost:5000/send-dm';
 
 function App() {
+  const [username, setUsername] = useState(''); 
   // State for the input field
   const [message, setMessage] = useState('');
   // State to track loading status
@@ -32,7 +33,7 @@ function App() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ 
-          username: "bilal96.1", // <-- ⚠️ REPLACE WITH A REAL USERNAME!
+          username: username,
           message: message 
         }),
       });
@@ -93,6 +94,15 @@ function App() {
           {/* THIS IS THE CRITICAL PART */}
           <div className="promptInputArea">
             {/* MAKE SURE ONLY THE INPUT IS HERE */}
+
+            <input
+              type="text"
+              className="chatInput usernameInput" // Added a new class for styling
+              placeholder="Instagram Username..."
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              disabled={isLoading}
+            />
             <input
               type="text"
               className="chatInput"
