@@ -1,0 +1,261 @@
+/* src/App.css */
+
+/* Header Section */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 4rem; 
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 10;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1A202C;
+}
+
+.logoIcon {
+  background: linear-gradient(135deg, #a05aff, #ff579b);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-size: 1.8rem;
+  display: inline-flex;
+}
+
+.navLinks {
+  display: flex;
+  gap: 2.5rem;
+}
+
+.navLinks a {
+  text-decoration: none;
+  color: #4A5568;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.navLinks a:hover {
+  color: #1A202C;
+}
+
+.authButtons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.authButtons button {
+  padding: 0.6rem 1.2rem;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.loginButton {
+  background-color: #f7fafc;
+  border-color: #e2e8f0;
+  color: #2d3748;
+}
+
+.loginButton:hover {
+  background-color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.getStartedButton {
+  background-color: #1A202C;
+  color: #FFF;
+}
+
+.getStartedButton:hover {
+  background-color: #000000;
+  transform: translateY(-1px);
+}
+
+/* Hero Section */
+.hero {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+  padding: 4rem 2rem 2rem 2rem;
+}
+
+.headline {
+  font-size: 3.75rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #1A202C;
+  letter-spacing: -0.025em;
+}
+
+.headline strong {
+  font-weight: 800;
+}
+
+.headline .heartIcon {
+  background: linear-gradient(135deg, #a05aff, #ff579b);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+  position: relative;
+  top: 6px;
+  font-size: 3.2rem;
+}
+
+.subheadline {
+  font-size: 1.25rem;
+  color: #4A5568;
+  margin-bottom: 3rem;
+  max-width: 600px;
+}
+
+/* Prompt Input Area */
+.promptContainer {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 0.75rem 1rem 0.75rem 1.5rem;
+  width: 100%;
+  max-width: 720px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+}
+
+.promptInputArea {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.promptControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.promptActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.promptButton {
+  background: #f1f5f9;
+  border: none;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #4A5568;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-weight: 500;
+}
+
+.promptButton:hover {
+  background-color: #e2e8f0;
+}
+
+.plusButton {
+  padding: 0.5rem;
+  border-radius: 12px;
+}
+
+.publicButton {
+  padding: 0.5rem 1rem;
+}
+
+.submitButton {
+  background-color: #4a5568;
+  color: #fff;
+  border-radius: 14px;
+  padding: 0.75rem;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submitButton:hover {
+  background-color: #2d3748;
+}
+
+/* Suggestion Buttons */
+.suggestions {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.suggestionButton {
+  background-color: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  color: #4A5568;
+  padding: 0.6rem 1.2rem;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+
+.suggestionButton:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+}
+
+.chatInput {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  background-color: transparent;
+  color: #1A202C;
+}
+
+.chatInput::placeholder {
+  color: #718096;
+}
+
+.submitButton:disabled {
+  background-color: #a0aec0;
+  cursor: not-allowed;
+}
+
+.statusMessage {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  color: #2d3748;
+  font-weight: 500;
+  max-width: 720px;
+  text-align: center;
+}

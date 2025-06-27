@@ -6,6 +6,45 @@ import os
 from dotenv import load_dotenv
 import logging
 from pathlib import Path
+from flask import Flask, request, jsonify, session
+from flask_cors import CORS
+
+# Initialize the Flask web server
+app = Flask(__name__)
+
+# Enable CORS (Cross-Origin Resource Sharing) to allow your React app
+# (running on localhost:5173) to communicate with this server (running on localhost:5000)
+CORS(app)
+
+@app.route('/send-dm', methods=['POST', 'OPTIONS'])
+def handle_send_dm():
+    if request.method == 'OPTIONS':
+        return jsonify({'status': 'ok'}), 200
+
+    print("\n--- INCOMING /send-dm REQUEST RECEIVED ---")
+    data = request.get_json()
+
+    if not data or 'username' not in data or 'message' not in data:
+        print("--- REQUEST FAILED: Missing username or message ---")
+        return jsonify({"error": "Missing 'username' or 'message' in request body"}), 400
+
+    username = data['username']
+    message_content = data['message']
+    print(f"Attempting to send DM to '{username}': '{message_content}'")
+
+    try:
+        # Call the actual MCP tool function
+        result = send_message(username=username, message=message_content)
+        print(f"Result from send_message tool: {result}")
+        
+        if result.get("success"):
+            return jsonify({"status": "DM sent successfully!", "details": result})
+        else:
+            return jsonify({"status": "Failed to send DM.", "error": result.get("message", "Unknown error")}), 500
+            
+    except Exception as e:
+        print(f"An unexpected server error occurred: {e}")
+        return jsonify({"status": "An server error occurred", "error": str(e)}), 500
 
 # Load environment variables from .env file
 load_dotenv()
@@ -623,31 +662,30 @@ def get_user_posts(username: str, count: int = 12) -> Dict[str, Any]:
     except Exception as e:
         return {"success": False, "message": str(e)}
 
-
 if __name__ == "__main__":
-   parser = argparse.ArgumentParser()
-   parser.add_argument("--username", type=str, help="Instagram username (can also be set via INSTAGRAM_USERNAME env var)")
-   parser.add_argument("--password", type=str, help="Instagram password (can also be set via INSTAGRAM_PASSWORD env var)")
-   args = parser.parse_args()
-
-   # Get credentials from environment variables or command line arguments
-   username = args.username or os.getenv("INSTAGRAM_USERNAME")
-   password = args.password or os.getenv("INSTAGRAM_PASSWORD")
+   # --- 1. Get Credentials ---
+   # Credentials will be loaded from the .env file
+   username = os.getenv("INSTAGRAM_USERNAME")
+   password = os.getenv("INSTAGRAM_PASSWORD")
 
    if not username or not password:
-       logger.error("Instagram credentials not provided. Please set INSTAGRAM_USERNAME and INSTAGRAM_PASSWORD environment variables in a .env file, or provide --username and --password arguments.")
-       print("Error: Instagram credentials not provided.")
-       print("Please either:")
-       print("1. Create a .env file with INSTAGRAM_USERNAME and INSTAGRAM_PASSWORD")
-       print("2. Use --username and --password command line arguments")
+       logger.error("Instagram credentials not provided in .env file.")
+       print("FATAL ERROR: Instagram credentials not provided.")
+       print("Please create a .env file with INSTAGRAM_USERNAME and INSTAGRAM_PASSWORD.")
        exit(1)
 
+   # --- 2. Login to Instagram ---
+   # The server logs itself in once when it starts.
    try:
-       logger.info("Attempting to login to Instagram...")
+       logger.info(f"Attempting to login to Instagram as {username}...")
        client.login(username, password)
-       logger.info("Successfully logged in to Instagram")
-       mcp.run(transport="stdio")
+       logger.info("Successfully logged in to Instagram!")
    except Exception as e:
        logger.error(f"Failed to login to Instagram: {str(e)}")
-       print(f"Error: Failed to login to Instagram - {str(e)}")
+       print(f"FATAL ERROR: Failed to login to Instagram - {str(e)}")
        exit(1)
+
+   # --- 3. Start the Web Server ---
+   # If login was successful, start the Flask app.
+   print("\n--- Starting Flask web server on http://localhost:5000 ---")
+   app.run(host='0.0.0.0', port=5000, debug=True)

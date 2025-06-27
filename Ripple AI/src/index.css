@@ -1,0 +1,44 @@
+/* src/index.css */
+
+/* Reset default browser styles and set up the font */
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #e0e8ff; /* Fallback background */
+}
+
+/* 
+  The main #root div where React mounts your app. 
+  We apply the gradient and noise background to it. 
+*/
+#root {
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  color: #1A202C;
+  overflow-x: hidden;
+}
+
+#root::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(180deg, #e4e9ff 0%, #dce3ff 25%, #d1d9ff 50%, #fbc2c8 75%, #ffb6a7 100%);
+  z-index: -2;
+}
+
+#root::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 500 500' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.15;
+  z-index: -1;
+  pointer-events: none;
+}
