@@ -67,26 +67,16 @@ function App() {
       <header className="header">
         <div className="logo">
           <span className="logoIcon"><FaHeart /></span>
-          Lovable
-        </div>
-        <nav className="navLinks">
-          <a href="#">Community</a>
-          <a href="#">Enterprise</a>
-          <a href="#">Learn</a>
-          <a href="#">Shipped</a>
-        </nav>
-        <div className="authButtons">
-          <button className="loginButton">Log in</button>
-          <button className="getStartedButton">Get started</button>
+          Ripple AI
         </div>
       </header>
 
       <main className="hero">
         <h1 className="headline">
-          Build something <span className="heartIcon"><FaHeart /></span> <strong>Lovable</strong>
+          Automate your Instagram DMs with AI
         </h1>
         <p className="subheadline">
-          Send an Instagram DM by chatting with the MCP server
+          Personalized messages at scale
         </p>
 
         {/* We use a form for better accessibility and event handling */}
@@ -114,13 +104,6 @@ function App() {
           </div>
 
           <div className="promptControls">
-            <div className="promptActions">
-              <button type="button" className="promptButton plusButton" disabled={isLoading}><BsPlus size={24} /></button>
-              <button type="button" className="promptButton publicButton" disabled={isLoading}>
-                <FaGlobe />
-                <span>Public</span>
-              </button>
-            </div>
             <button type="submit" className="submitButton" disabled={isLoading}>
               {isLoading ? '...' : <BsArrowUp size={24} />}
             </button>
